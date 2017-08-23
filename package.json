@@ -1,0 +1,24 @@
+{
+  "name": "lutronjs",
+  "version": "0.0.1",
+  "author": "Sushil Singh",
+  "description": " Api Gateway for lutron devices",
+  "dependencies": {
+    "express": "^4.15.4",
+    "node-ssh": "^4.2.3",
+    "source-map-support": "^0.4.16"
+  },
+  "devDependencies": {
+    "@types/node": "^8.0.19",
+    "typescript": "^2.4.2"
+  },
+  "scripts": {
+    "build": "./node_modules/.bin/tsc",
+    "server": "node --harmony ./build/lutronServer.js"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ]
+}
