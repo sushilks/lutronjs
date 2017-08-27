@@ -55,6 +55,35 @@ app.put('/v0/device/:deviceid/value/:value', function(req:ExpCB, res:ExpCB, next
   }
 });
 
+app.get('/v0/name/:devicename', function (req:ExpCB, res:ExpCB, next:ExpCB){
+  try {
+    let deviceName = req.params.devicename;
+    lutron.getValueName(deviceName)
+    .then((r:number)=>{
+      let result = {'deviceName': deviceName, 'value':r};
+      res.status(200).send(JSON.stringify(result));
+    });
+  } catch(e) {
+    console.log("Error: " + e);
+    console.log(e.stack);
+    res.status(400).send("Error while processing the request");
+  }
+});
+app.put('/v0/name/:devicename/value/:value', function(req:ExpCB, res:ExpCB, next:ExpCB){
+  try {
+    let deviceName = req.params.devicename;
+    let value = parseInt(req.params.value);
+    lutron.setValueName(deviceName, value)
+    .then((r:any) => {
+        res.status(200).send('ok');
+    });
+  } catch(e) {
+    console.log("Error: " + e);
+    console.log(e.stack);
+    res.status(400).send("Error while processing the request");
+  }
+});
+
 lutron.init()
 .then(()=>
   app.listen(port, function() {

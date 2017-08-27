@@ -88,6 +88,7 @@ class LutronAPI {
     private shellPromise: { [k:string]: (d:LutronMSG | string)=>LutronMSG | string} = {};
     private shellPromiseResp:string = '';
     private deviceList: {[id:number]: LutronDevices} = {};
+    private deviceListName: {[name:string]: LutronDevices} = {};
     private zoneSatus: {[id:number]: number}  = {};
     private DEBUG = 1;
     private chunkBuffer :string = '';
@@ -140,7 +141,9 @@ class LutronAPI {
           // add all the devices in
           for (let idx in resp.Body.Devices) {
             let device_id = this.getId(resp.Body.Devices[idx].href)
-            this.deviceList[device_id] = resp.Body.Devices[idx];
+            let dev_t = resp.Body.Devices[idx];
+            this.deviceList[device_id] = dev_t;
+            this.deviceListName[dev_t.Name] = dev_t;
           }
         } else if (resp.CommuniqueType == 'ReadResponse' && resp.Header.MessageBodyType == "OneZoneStatus"
               && resp.Body !== undefined && resp.Body.ZoneStatus !== undefined) {
@@ -205,6 +208,14 @@ class LutronAPI {
         throw "Unable to get zone for device id" + devid;
       }
     }
+    public getZoneName(devname:string) {
+      let dev = this.deviceListName[devname];
+      if (dev != undefined && dev.LocalZones != undefined) {
+        return this.getId(dev.LocalZones[0].href)
+      } else {
+        throw "Unable to get zone for device id" + devname;
+      }
+    }
     public async getValue(deviceId:number) {
       try {
         let zoneid = this.getZone(deviceId);
@@ -224,9 +235,29 @@ class LutronAPI {
         return -1;
       }
     }
-    public async setValue(deviceId:number, value:number):Promise<boolean> {
+    public async getValueName(deviceName:string) {
       try {
-        let zoneid = this.getZone(deviceId);
+
+        let zoneid = this.getZoneName(deviceName);
+        let cmd:LutronMSG = {
+          CommuniqueType: 'ReadRequest',
+          Header: {
+            Url: '/zone/' + zoneid + '/status'
+          }
+        }
+        let ret_str = await this.execShellCommand(cmd);
+        if (ret_str.Body !== undefined && ret_str.Body.ZoneStatus !== undefined)
+          return ret_str.Body.ZoneStatus.Level;
+        else
+          return -1;
+      } catch(e) {
+        console.log("ERROR : getValue:" + e.stack)
+        return -1;
+      }
+    }
+    public async setValueName(deviceName:string, value:number):Promise<boolean> {
+      try {
+        let zoneid = this.getZoneName(deviceName);
         let cmd:LutronMSG = {
           CommuniqueType: 'CreateRequest',
           Header: {
