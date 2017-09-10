@@ -264,6 +264,7 @@ class LutronAPI {
     public async setValueName(deviceName:string, value:number):Promise<boolean> {
       try {
         let zoneid = this.getZoneName(deviceName);
+        console.log("    Setting Value:" + deviceName + " = " + value);
         let cmd:LutronMSG = {
           CommuniqueType: 'CreateRequest',
           Header: {
@@ -291,10 +292,10 @@ class LutronAPI {
       try {
         let zoneid = this.getZoneName(deviceName);
         let curValue =  this.zoneSatus[zoneid];
+        let nextValue = 0;
         if (curValue == 0)
-          curValue = 100;
-        else
-          curValue = 0;
+          nextValue = 100;
+        console.log("     Toggle:" + deviceName + " Zone:" + zoneid + " Value:" + curValue + " -> " + nextValue);
         let cmd:LutronMSG = {
           CommuniqueType: 'CreateRequest',
           Header: {
@@ -305,7 +306,7 @@ class LutronAPI {
               CommandType: 'GoToLevel',
               Parameter: [ {
                 Type: 'Level',
-                Value: curValue
+                Value: nextValue
               }]
             }
           }

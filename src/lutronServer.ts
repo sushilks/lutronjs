@@ -32,6 +32,7 @@ app.get('/v0/device/:deviceid', function (req:ExpCB, res:ExpCB, next:ExpCB){
     lutron.getValue(deviceId)
     .then((r:number)=>{
       let result = {'deviceId': deviceId, 'value':r};
+      console.log("    Returning:" + JSON.stringify(result));
       res.status(200).send(JSON.stringify(result));
     });
   } catch(e) {
@@ -61,6 +62,7 @@ app.get('/v0/name/:devicename', function (req:ExpCB, res:ExpCB, next:ExpCB){
     lutron.getValueName(deviceName)
     .then((r:number)=>{
       let result = {'deviceName': deviceName, 'value':r};
+      console.log("    Returning:" + JSON.stringify(result));
       res.status(200).send(JSON.stringify(result));
     });
   } catch(e) {
@@ -73,6 +75,7 @@ app.put('/v0/name/:devicename/value/:value', function(req:ExpCB, res:ExpCB, next
   try {
     let deviceName = req.params.devicename;
     let value = parseInt(req.params.value);
+    console.log("Got /v0/name/ for " + deviceName + " = " + value);
     lutron.setValueName(deviceName, value)
     .then((r:any) => {
         res.status(200).send('ok');
@@ -86,6 +89,7 @@ app.put('/v0/name/:devicename/value/:value', function(req:ExpCB, res:ExpCB, next
 app.put('/v0/toggle/:devicename', function(req:ExpCB, res:ExpCB, next:ExpCB){
   try {
     let deviceName = req.params.devicename;
+    console.log("Got /v0/toggle/ for " + deviceName);
     lutron.toggleName(deviceName)
     .then((r:any) => {
         res.status(200).send('ok');
