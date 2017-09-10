@@ -241,6 +241,9 @@ class LutronAPI {
       try {
 
         let zoneid = this.getZoneName(deviceName);
+        let curValue =  this.zoneSatus[zoneid];
+        return curValue;
+        /*
         let cmd:LutronMSG = {
           CommuniqueType: 'ReadRequest',
           Header: {
@@ -255,7 +258,7 @@ class LutronAPI {
       } catch(e) {
         console.log("ERROR : getValue:" + e.stack)
         return -1;
-      }
+      }*/
     }
     public async setValueName(deviceName:string, value:number):Promise<boolean> {
       try {
