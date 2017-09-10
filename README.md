@@ -2,7 +2,8 @@
 
 A NodeJS server which accepts REST commands and configures Lutron Caseta Gateway
 
-Work in Progress.
+I have it connected to some Dimmer and switches so far and it work well.
+I am primarily using it for connecting all the Lutron devices to LOXONE home automation system.
 
 # TO setup
 npm install
@@ -12,6 +13,19 @@ npm run build
 
 # To start SERVER
 LUTRON_SERVER_IP="xx.xx.xx.xx" npm run server
+
+# To create a container to run the package use the docker directory
+## Build the container
+cd docker
+./build_lutronjs
+## to run the container (I Use shared namespace in my case)
+docker run --net=host  -d --name lutronjs --restart unless-stopped --tmpfs /run --tmpfs /run/lock sushilks/lutronjs /bin/bash -c ". /root/.nvm/nvm.sh && LUTRON_SERVER_PORT=<PORT> LUTRON_SERVER_IP=<HUB IP> /root/run_lutronjs.sh"
+
+## To attach to the running container
+./attach_lutronjs
+
+## To view the logs from the container
+docker logs -f lutronjs
 
 # Usages
 ## Get a list of devices
@@ -128,7 +142,7 @@ i.e. example output
 ```
 
 
-
+## Ack
 
 The private key is copied form the project
 https://github.com/njschwartz/Lutron-Smart-Pi
