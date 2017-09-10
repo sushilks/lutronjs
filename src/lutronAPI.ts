@@ -255,10 +255,11 @@ class LutronAPI {
           return ret_str.Body.ZoneStatus.Level;
         else
           return -1;
+          */
       } catch(e) {
         console.log("ERROR : getValue:" + e.stack)
         return -1;
-      }*/
+      }
     }
     public async setValueName(deviceName:string, value:number):Promise<boolean> {
       try {
