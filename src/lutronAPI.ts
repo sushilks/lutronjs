@@ -248,9 +248,13 @@ class LutronAPI {
         }
         let res:{[id:string]: number} = {};
         for (const key in this.deviceListName) {
-            let r = await this.getValueName(key);
-            if (r != -1) {
-              res[key] = r;
+            let dev = this.deviceListName[key];
+            if (dev.DeviceType == 'WallDimmer' ||
+                dev.DeviceType == 'WallSwitch') {
+              let r = await this.getValueName(key);
+              if (r != -1) {
+                res[key] = r;
+              }
             }
         }
         return res;
