@@ -242,8 +242,8 @@ class LutronAPI {
 
         let zoneid = this.getZoneName(deviceName);
         let curValue =  this.zoneSatus[zoneid];
-        return curValue;
-        /*
+        if (curValue != undefined && curValue != null)
+          return curValue;
         let cmd:LutronMSG = {
           CommuniqueType: 'ReadRequest',
           Header: {
@@ -255,7 +255,6 @@ class LutronAPI {
           return ret_str.Body.ZoneStatus.Level;
         else
           return -1;
-          */
       } catch(e) {
         console.log("ERROR : getValue:" + e.stack)
         return -1;
