@@ -150,6 +150,7 @@ class LutronAPI {
           let level = resp.Body.ZoneStatus.Level
           let zone_id = this.getId(resp.Body.ZoneStatus.Zone.href)
           this.zoneSatus[zone_id] = level
+          if (this.debug) console.log("LutronAPI: Updating Status for [" + zone_id + "] to " + level);
         }
         if (resp.CommuniqueType == this.shellPromiseResp) {
           this.shellPromise.resolve(resp);
@@ -280,6 +281,38 @@ class LutronAPI {
         return false;
       }
     }
+
+    public async toggleName(deviceName:string):Promise<boolean> {
+      try {
+        let zoneid = this.getZoneName(deviceName);
+        let curValue =  this.zoneSatus[zoneid];
+        if (curValue == 0)
+          curValue = 100;
+        else
+          curValue = 0;
+        let cmd:LutronMSG = {
+          CommuniqueType: 'CreateRequest',
+          Header: {
+            Url: '/zone/' + zoneid + '/commandprocessor'
+          },
+          Body: {
+            Command: {
+              CommandType: 'GoToLevel',
+              Parameter: [ {
+                Type: 'Level',
+                Value: curValue
+              }]
+            }
+          }
+        };
+        let ret_str = await this.execShellCommand(cmd);
+        return true;
+      } catch(e) {
+        console.log("ERROR : setValue:" + e.stack)
+        return false;
+      }
+    }
+
     public getDevices():{[id:number]:LutronDevices} {
       return this.deviceList;
     }
