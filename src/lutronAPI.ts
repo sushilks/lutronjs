@@ -257,6 +257,32 @@ class LutronAPI {
         return -1;
       }
     }
+    public async setValue(zoneid:number, value:number):Promise<boolean> {
+      try {
+        console.log("    Setting Zone Value:" + zoneid + " = " + value);
+        let cmd:LutronMSG = {
+          CommuniqueType: 'CreateRequest',
+          Header: {
+            Url: '/zone/' + zoneid + '/commandprocessor'
+          },
+          Body: {
+            Command: {
+              CommandType: 'GoToLevel',
+              Parameter: [ {
+                Type: 'Level',
+                Value: value
+              }]
+            }
+          }
+        };
+        let ret_str = await this.execShellCommand(cmd);
+        return true;
+      } catch(e) {
+        console.log("ERROR : setZoneValue:" + e.stack)
+        return false;
+      }
+    }
+
     public async setValueName(deviceName:string, value:number):Promise<boolean> {
       try {
         let zoneid = this.getZoneName(deviceName);
