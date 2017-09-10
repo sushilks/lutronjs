@@ -92,6 +92,7 @@ class LutronAPI {
     private zoneSatus: {[id:number]: number}  = {};
     private DEBUG = 1+2;
     private chunkBuffer :string = '';
+    private statusAllCnt = 0;
     constructor(loc: string) {
       this.loc = loc;
       this.ssh = new NodeSSH();
@@ -237,6 +238,28 @@ class LutronAPI {
         return -1;
       }
     }
+    public async getStatusAll() {
+      try {
+        // every 100 queries do a full device list
+        this.statusAllCnt ++;
+        if (this.statusAllCnt == 100) {
+          await this.getDeviceList()
+          this.statusAllCnt = 0;
+        }
+        let res:{[id:string]: number} = {};
+        for (const key in this.deviceListName) {
+            let r = await this.getValueName(key);
+            if (r != -1) {
+              res[key] = r;
+            }
+        }
+        return res;
+      } catch(e) {
+        console.log("ERROR : getStatusAll:" + e.stack)
+        return -1;
+      }
+    }
+
     public async getValueName(deviceName:string) {
       try {
 
