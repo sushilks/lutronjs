@@ -133,25 +133,26 @@ class LutronAPI {
     }
     private shellData_(chunk:string) {
       if (this.DEBUG) console.log("LutronAPI::shellData got chunk " + chunk);
-      if (this.shellPromiseResp != '') {
-        let resp:LutronMSG = JSON.parse(chunk);
-        if (resp.CommuniqueType == 'ReadResponse' && resp.Header.MessageBodyType == "MultipleDeviceDefinition"
-            && resp.Body !== undefined
-            && resp.Body.Devices !== undefined) {
-          // add all the devices in
-          for (let idx in resp.Body.Devices) {
-            let device_id = this.getId(resp.Body.Devices[idx].href)
-            let dev_t = resp.Body.Devices[idx];
-            this.deviceList[device_id] = dev_t;
-            this.deviceListName[dev_t.Name] = dev_t;
-          }
-        } else if (resp.CommuniqueType == 'ReadResponse' && resp.Header.MessageBodyType == "OneZoneStatus"
-              && resp.Body !== undefined && resp.Body.ZoneStatus !== undefined) {
-          let level = resp.Body.ZoneStatus.Level
-          let zone_id = this.getId(resp.Body.ZoneStatus.Zone.href)
-          this.zoneSatus[zone_id] = level
-          if (this.debug) console.log("LutronAPI: Updating Status for [" + zone_id + "] to " + level);
+      let resp:LutronMSG = JSON.parse(chunk);
+      if (resp.CommuniqueType == 'ReadResponse' && resp.Header.MessageBodyType == "MultipleDeviceDefinition"
+          && resp.Body !== undefined
+          && resp.Body.Devices !== undefined) {
+        // add all the devices in
+        for (let idx in resp.Body.Devices) {
+          let device_id = this.getId(resp.Body.Devices[idx].href)
+          let dev_t = resp.Body.Devices[idx];
+          this.deviceList[device_id] = dev_t;
+          this.deviceListName[dev_t.Name] = dev_t;
         }
+      } else if (resp.CommuniqueType == 'ReadResponse' && resp.Header.MessageBodyType == "OneZoneStatus"
+            && resp.Body !== undefined && resp.Body.ZoneStatus !== undefined) {
+        let level = resp.Body.ZoneStatus.Level
+        let zone_id = this.getId(resp.Body.ZoneStatus.Zone.href)
+        this.zoneSatus[zone_id] = level
+        if (this.DEBUG) console.log("LutronAPI: Updating Status for [" + zone_id + "] to " + level);
+      }
+
+      if (this.shellPromiseResp != '') {
         if (resp.CommuniqueType == this.shellPromiseResp) {
           this.shellPromise.resolve(resp);
           this.shellPromiseResp = '';

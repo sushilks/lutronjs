@@ -83,10 +83,9 @@ app.put('/v0/name/:devicename/value/:value', function(req:ExpCB, res:ExpCB, next
     res.status(400).send("Error while processing the request");
   }
 });
-app.put('/v0/toggle/:devicename/value/:value', function(req:ExpCB, res:ExpCB, next:ExpCB){
+app.put('/v0/toggle/:devicename', function(req:ExpCB, res:ExpCB, next:ExpCB){
   try {
     let deviceName = req.params.devicename;
-    let value = parseInt(req.params.value);
     lutron.toggleName(deviceName)
     .then((r:any) => {
         res.status(200).send('ok');
