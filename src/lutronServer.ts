@@ -54,10 +54,10 @@ app.put('/v0/device/:deviceid/value/:value', function(req:ExpCB, res:ExpCB, next
     res.status(400).send("Error while processing the request");
   }
 });
-
 app.get('/v0/name/:devicename', function (req:ExpCB, res:ExpCB, next:ExpCB){
   try {
     let deviceName = req.params.devicename;
+    console.log("Got /v0/name/" + deviceName);
     lutron.getValueName(deviceName)
     .then((r:number)=>{
       let result = {'deviceName': deviceName, 'value':r};
@@ -83,7 +83,6 @@ app.put('/v0/name/:devicename/value/:value', function(req:ExpCB, res:ExpCB, next
     res.status(400).send("Error while processing the request");
   }
 });
-
 lutron.init()
 .then(()=>
   app.listen(port, function() {

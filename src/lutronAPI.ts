@@ -90,7 +90,7 @@ class LutronAPI {
     private deviceList: {[id:number]: LutronDevices} = {};
     private deviceListName: {[name:string]: LutronDevices} = {};
     private zoneSatus: {[id:number]: number}  = {};
-    private DEBUG = 1;
+    private DEBUG = 1+2;
     private chunkBuffer :string = '';
     constructor(loc: string) {
       this.loc = loc;
