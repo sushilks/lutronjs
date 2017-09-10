@@ -1,34 +1,4 @@
-/*
-{"CommuniqueType":"ExceptionResponse","Header":{"MessageBodyType":"ExceptionDetail","StatusCode":"400 BadRequest"},"Body":{"Message":"Invalid json."}}
-{"CommuniqueType":"ReadRequest","Header":{"Url":"/device"}}
-{"CommuniqueType":"ReadResponse","Header":{"MessageBodyType":"MultipleDeviceDefinition","StatusCode":"200 OK","Url":"/device"},"Body":{"Devices":[{"href":"/device/1","Name":"Smart Bridge","FullyQualifiedName":["Smart Bridge"],"Parent":{"href":"/project"},"SerialNumber":31950471,"ModelNumber":"L-BDG2-WH","DeviceType":"SmartBridge","RepeaterProperties":{"IsRepeater":true}},{"href":"/device/2","Name":"Master Light","FullyQualifiedName":["Master Light"],"Parent":{"href":"/project"},"SerialNumber":26489925,"ModelNumber":"PD-6WCL-XX","DeviceType":"WallDimmer","LocalZones":[{"href":"/zone/1"}]},{"href":"/device/3","Name":"Master Light Remote 1","FullyQualifiedName":["Master Light Remote 1"],"Parent":{"href":"/project"},"SerialNumber":28995088,"ModelNumber":"PJ2-3BRL-GXX-X01","DeviceType":"Pico3ButtonRaiseLower","ButtonGroups":[{"href":"/buttongroup/2"}]}]}}
-1
-{"CommuniqueType":"ExceptionResponse","Header":{"MessageBodyType":"ExceptionDetail","StatusCode":"400 BadRequest"},"Body":{"Message":"Invalid json."}}
-packet_write_wait: Connection to 192.168.55.234: Broken pipe
-(reverse-i-search)`':
-sushil-mac:~ sushil$ ssh -p 2203 -i ~/.ssh/lutron.key leap@localhost
-The authenticity of host '[localhost]:2203 ([::1]:2203)' can't be established.
-ECDSA key fingerprint is SHA256:XTI9SZ32/VJEcZHex3DyUArztUGaJc9Mhv57pG1smWc.
-Are you sure you want to continue connecting (yes/no)? yes
-Warning: Permanently added '[localhost]:2203' (ECDSA) to the list of known hosts.
-{"CommuniqueType":"ReadRequest","Header":{"Url":"/device"}}
-{"CommuniqueType":"ReadResponse","Header":{"MessageBodyType":"MultipleDeviceDefinition","StatusCode":"200 OK","Url":"/device"},"Body":{"Devices":[{"href":"/device/1","Name":"Smart Bridge","FullyQualifiedName":["Smart Bridge"],"Parent":{"href":"/project"},"SerialNumber":31950471,"ModelNumber":"L-BDG2-WH","DeviceType":"SmartBridge","RepeaterProperties":{"IsRepeater":true}},{"href":"/device/2","Name":"Master Light","FullyQualifiedName":["Master Light"],"Parent":{"href":"/project"},"SerialNumber":26489925,"ModelNumber":"PD-6WCL-XX","DeviceType":"WallDimmer","LocalZones":[{"href":"/zone/1"}]},{"href":"/device/3","Name":"Master Light Remote 1","FullyQualifiedName":["Master Light Remote 1"],"Parent":{"href":"/project"},"SerialNumber":28995088,"ModelNumber":"PJ2-3BRL-GXX-X01","DeviceType":"Pico3ButtonRaiseLower","ButtonGroups":[{"href":"/buttongroup/2"}]}]}}
-{"CommuniqueType":"ReadRequest","Header":{"Url":"/zone/1//status"}}
-{"CommuniqueType":"ExceptionResponse","Header":{"MessageBodyType":"ExceptionDetail","StatusCode":"400 BadRequest","Url":"/zone/1//status"},"Body":{"Message":"This request is not supported"}}
-{"CommuniqueType":"ReadRequest","Header":{"Url":"/zone/1/status"}}
-{"CommuniqueType":"ReadResponse","Header":{"MessageBodyType":"OneZoneStatus","StatusCode":"200 OK","Url":"/zone/1/status"},"Body":{"ZoneStatus":{"Level":0,"Zone":{"href":"/zone/1"}}}}
 
-{"CommuniqueType":"CreateRequest","Header":{"Url":"/zone/1/commandprocessor"},"Body":{"Command":{"CommandType":"GoToLevel","Parameter":[{"Type":"Level","Value":0}]}}}
-{"CommuniqueType":"CreateResponse","Header":{"MessageBodyType":"OneZoneStatus","StatusCode":"201 Created","Url":"/zone/1/commandprocessor"},"Body":{"ZoneStatus":{"Level":0,"Zone":{"href":"/zone/1"}}}}
-{"CommuniqueType":"ReadResponse","Header":{"MessageBodyType":"OneZoneStatus","StatusCode":"200 OK","Url":"/zone/1/status/level"},"Body":{"ZoneStatus":{"Level":0,"Zone":{"href":"/zone/1"}}}}
-
-
-
-{"CommuniqueType":"CreateRequest","Header":{"Url":"/zone/1/commandprocessor"},"Body":{"Command":{"CommandType":"GoToLevel","Parameter":[{"Type":"Level","Value":0}]}}}
-{"CommuniqueType":"CreateResponse","Header":{"MessageBodyType":"OneZoneStatus","StatusCode":"201 Created","Url":"/zone/1/commandprocessor"},"Body":{"ZoneStatus":{"Level":0,"Zone":{"href":"/zone/1"}}}}
-{"CommuniqueType":"ReadResponse","Header":{"MessageBodyType":"OneZoneStatus","StatusCode":"200 OK","Url":"/zone/1/status/level"},"Body":{"ZoneStatus":{"Level":0,"Zone":{"href":"/zone/1"}}}}
-
-*/
 const NodeSSH = require('node-ssh')
 const fs = require('fs')
 const SSHUserName = 'leap'
