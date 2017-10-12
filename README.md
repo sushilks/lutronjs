@@ -1,3 +1,6 @@
+# NOTE
+Looks like lutron did an firmware update that changed how the hub works, this breakes the code present in this repo. There is no clear solution at this time to fix this.
+
 # lutronjs
 
 A NodeJS server which accepts REST commands and configures Lutron Caseta Gateway
