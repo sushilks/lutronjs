@@ -1,5 +1,6 @@
 # NOTE
-Looks like lutron did an firmware update that changed how the hub works, this breakes the code present in this repo. There is no clear solution at this time to fix this.
+Looks like lutron did an firmware update that changed how the hub works, this breakes the code present in this repo. 
+I have updated the code to use Telnet to connect to the PRO-Bridge, with that this code work. The previous SSH mechanism of accessing the API is no longer functional.
 
 # lutronjs
 
