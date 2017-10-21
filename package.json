@@ -6,7 +6,8 @@
   "dependencies": {
     "express": "^4.15.4",
     "node-ssh": "^4.2.3",
-    "source-map-support": "^0.4.16"
+    "source-map-support": "^0.4.16",
+    "telnet-client": "^0.15.4"
   },
   "devDependencies": {
     "@types/node": "^8.0.19",
