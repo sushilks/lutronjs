@@ -142,7 +142,7 @@ class LutronAPI {
     }
 
     private execShellCommand(cmd:LutronMSG): Promise<LutronMSG> {
-      return new Promise((function (self:LutronAPI, resolve:(d:string)=>string, reject:(d:string)=>string) {
+      return new Promise((function (self:LutronAPI, resolve:(d:string|LutronMSG)=>string|LutronMSG, reject:(d:string|LutronMSG)=>string|LutronMSG) {
         if (self.shellPromiseResp != '') {
           console.log('ERROR: Found Previous promise callbacks!! Will Overwrite');
           let msg:LutronMSG = {
