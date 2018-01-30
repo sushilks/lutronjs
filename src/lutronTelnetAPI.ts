@@ -1,6 +1,6 @@
 const Telnet = require('telnet-client')
-
-
+let squeue = require('./taskQueue')
+var loxone = require('./loxone-cfg');
 
 export
 class LutronTelnetAPI {
@@ -102,9 +102,30 @@ class LutronTelnetAPI {
           // event notification
           if (type == 'OUTPUT' && action == 1) {
             this.devices[deviceId] = param
+            this.scheduleLoxoneUpdate(deviceId, param)
           }
         }
       }
+    }
+    private loxoneCBUpdate(id:number, val:number) {
+//      console.log("Got Callback to sync Loxone ID:" + id + " value="+val);
+      if (id in loxone._devMapper) {
+        let dev = loxone._devMapper[id]
+        loxone.get(dev.name, (function(name: string, set_val:number, out:any) {
+          if (out.LL.Code == 200) {
+            let val = parseFloat(out.LL.value)
+            if (val != set_val) {
+                console.log("Updating loxone " + name + " OldVal:" + val + " NewVal:" + set_val)
+                loxone.set(name, set_val, function(out:any){})
+            }
+          }
+        }).bind(null, dev.name, val))
+      }
+    }
+    private scheduleLoxoneUpdate(deviceId:number, value:number){
+      squeue.sched(deviceId, value, 1000, (function(th:LutronTelnetAPI, id:number, val:number) {
+        th.loxoneCBUpdate(id, val)
+      }).bind(null, this))
     }
 
 }
