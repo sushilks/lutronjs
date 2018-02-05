@@ -9,7 +9,7 @@ var loxone = new LoxoneAPI({
 // populate the table below with
 // device ID from the Lutron Server and Device Name from Loxone.
 loxone._devMapper = {
-  5:{"name":"Master", "type":"dimmer"},
-  6:{"name":"Hallway Night Light", "type":"dimmer"}
+  5:[{"action":1, "name":"Master", "type":"dimmer"}],
+  6:[{"action":1, "name":"Hallway Night Light", "type":"dimmer"}]
 }
 module.exports = loxone;

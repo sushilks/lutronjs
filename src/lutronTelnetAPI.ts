@@ -102,29 +102,53 @@ class LutronTelnetAPI {
           // event notification
           if (type == 'OUTPUT' && action == 1) {
             this.devices[deviceId] = param
-            this.scheduleLoxoneUpdate(deviceId, param)
+            this.scheduleLoxoneUpdate(deviceId, action, param)
           }
         }
       }
     }
-    private loxoneCBUpdate(id:number, val:number) {
-//      console.log("Got Callback to sync Loxone ID:" + id + " value="+val);
+    private loxoneCBUpdate(id:number, action:number, val:number) {
+      console.log("Got Callback to sync Loxone ID:" + id + "action = " + action+" value="+val);
       if (id in loxone._devMapper) {
-        let dev = loxone._devMapper[id]
-        loxone.get(dev.name, (function(name: string, set_val:number, out:any) {
+        let devAList = loxone._devMapper[id]
+        let dev = devAList[0]
+        let found = 0
+        for (let idx in devAList) {
+          if (devAList[idx] == action) {
+            dev = devAList[idx]
+            found = 1
+            break;
+          }
+        }
+        if (found == 0) {
+          console.log("\t Did not find the action" + action + " for device " + id);
+          return;
+        }
+
+        console.log("Got Callback to sync Loxone ID:" + id + "action = " + action+" value="+val);
+        let rname = dev.name
+        if ('read_name' in dev) rname = dev.read_name
+        loxone.get(rname, (function(name: string, type:string, set_val:any, out:any) {
           if (out.LL.Code == 200) {
+            if (type == 'switch') {
+              if (set_val > 0) set_val = 1;
+            }
             let val = parseFloat(out.LL.value)
             if (val != set_val) {
+                if (type == 'switch') {
+                   if (set_val == 1) set_val = 'on';
+                   else set_val = 'off';
+                }
                 console.log("Updating loxone " + name + " OldVal:" + val + " NewVal:" + set_val)
                 loxone.set(name, set_val, function(out:any){})
             }
           }
-        }).bind(null, dev.name, val))
+        }).bind(null, dev.name, dev.type, val))
       }
     }
-    private scheduleLoxoneUpdate(deviceId:number, value:number){
-      squeue.sched(deviceId, value, 1000, (function(th:LutronTelnetAPI, id:number, val:number) {
-        th.loxoneCBUpdate(id, val)
+    private scheduleLoxoneUpdate(deviceId:number, action:number, value:number){
+      squeue.sched(deviceId, {v:value, a:action}, 1000, (function(th:LutronTelnetAPI, id:number, val:any) {
+        th.loxoneCBUpdate(id, val.a, val.v)
       }).bind(null, this))
     }
 
