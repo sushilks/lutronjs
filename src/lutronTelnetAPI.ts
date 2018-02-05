@@ -103,6 +103,8 @@ class LutronTelnetAPI {
           if (type == 'OUTPUT' && action == 1) {
             this.devices[deviceId] = param
             this.scheduleLoxoneUpdate(deviceId, action, param)
+          } else if (type == 'DEVICE') {
+            this.scheduleLoxoneUpdate(deviceId, action, param)
           }
         }
       }
@@ -114,7 +116,7 @@ class LutronTelnetAPI {
         let dev = devAList[0]
         let found = 0
         for (let idx in devAList) {
-          if (devAList[idx] == action) {
+          if (devAList[idx].action == action) {
             dev = devAList[idx]
             found = 1
             break;
@@ -128,6 +130,12 @@ class LutronTelnetAPI {
         console.log("Got Callback to sync Loxone ID:" + id + "action = " + action+" value="+val);
         let rname = dev.name
         if ('read_name' in dev) rname = dev.read_name
+        // if just cmd then pass it through
+        if (dev.type == 'direct') {
+          console.log("Got a direct command will pass through command " + dev.command + " to " + dev.name)
+          loxone.set(dev.name, dev.command, function(out:any){})
+          return
+        }
         loxone.get(rname, (function(name: string, type:string, set_val:any, out:any) {
           if (out.LL.Code == 200) {
             if (type == 'switch') {
