@@ -8,6 +8,7 @@ class LoxoneWS {
   private debug:boolean;
   private state:any;
   constructor(loc:string, userid:string, password:string, devMap:any) {
+     this.debug = false
      this.loxone = new LWA(loc,userid,password, true, 'Token-Enc')
      this.devMapper=devMap
      this.state = {
