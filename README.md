@@ -1,6 +1,7 @@
 # NOTE
-Looks like lutron did an firmware update that changed how the hub works, this breakes the code present in this repo. 
-I have updated the code to use Telnet to connect to the PRO-Bridge, with that this code work. The previous SSH mechanism of accessing the API is no longer functional.
+some time back Lutron updeated the code to prevent ssh-key access to the controller. To fix I updated the code to use Telnet to connect to the PRO-Bridge, with that this code work. The previous SSH mechanism of accessing the API is no longer functional. And this code only works with PRO-Bridge
+
+I have also added LOXONE sync to the code base, now all changes in lutron state will be directly updated into loxone. (i.e.  pressing a lutron switch on the wall will also toggle the state of a virtual switch in the LOXONE controller) Helps in keeping LOXONE dashboard in sync,(Othewise I was having the problem where loxone will say light is off but it may have been turned on by someone pressing the switch on the wall). 
 
 # lutronjs
 
@@ -17,6 +18,10 @@ npm run build
 
 # To start SERVER
 LUTRON_SERVER_IP="xx.xx.xx.xx" npm run server
+
+# To run Watch
+npm run watch 
+this will show all the events generated in the LOXONE controller.
 
 # To create a container to run the package use the docker directory
 ## Build the container
@@ -146,7 +151,3 @@ i.e. example output
 ```
 
 
-## Ack
-
-The private key is copied form the project
-https://github.com/njschwartz/Lutron-Smart-Pi
