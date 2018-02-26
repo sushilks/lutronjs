@@ -1,15 +1,11 @@
-var LoxoneAPI = require('loxone-nodejs');
-
-var loxone = new LoxoneAPI({
-    ip: "192.168.1.2", // Add your LOXONE Server IP ADDR
-    debug: false,
-    username: "username", // ADD A Loxone USER ID
-    password: "changme" // ADD A Loxone Password
-});
+const LWSU = require('./loxoneWSUtil')
 // populate the table below with
 // device ID from the Lutron Server and Device Name from Loxone.
-loxone._devMapper = {
-  5:[{"action":1, "name":"Master", "type":"dimmer"}],
-  6:[{"action":1, "name":"Hallway Night Light", "type":"dimmer"}]
+let deviceMapper = {
+  1:[{"action":1, "name":"Master", "type":"default", "uuid":"12912922-2928-9392-ffff966013b4d4d8", "mult":1.0}],
+  2:[{"action":1, "name":"Hallway Night Light", "type":"default", "uuid":"12912922-1234-9392-ffff966013b4d4d8", "mult":1.0}],
+  3:[{"action":2, "name":"Master-Blind", "uuid":"12912922-3a53-9392-ffff966013b4d4d8", "type":"direct", "command":"PulseUp"},
+     {"action":4, "name":"Master-Blind", "uuid":"12912922-9a31-9392-ffff966013b4d4d8", "type":"direct", "command":"PulseDown"}]
 }
-module.exports = loxone;
+let lwsu = new LWSU.LoxoneWS('192.168.1.2','username', 'password',  deviceMapper)
+module.exports = lwsu;

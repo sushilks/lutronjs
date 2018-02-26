@@ -8,7 +8,8 @@
     "node-ssh": "^4.2.3",
     "source-map-support": "^0.4.16",
     "telnet-client": "^0.15.4",
-    "loxone-nodejs": ""
+    "loxone-nodejs": "",
+    "node-lox-ws-api": ""
   },
   "devDependencies": {
     "@types/node": "^8.0.19",
@@ -17,6 +18,7 @@
   },
   "scripts": {
     "build": "./node_modules/.bin/tsc",
+    "watch": "node --harmony ./build/loxone_events.js",
     "server": "node --harmony ./build/lutronServer.js"
   },
   "licenses": [

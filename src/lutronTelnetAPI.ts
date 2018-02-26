@@ -1,6 +1,8 @@
 const Telnet = require('telnet-client')
 let squeue = require('./taskQueue')
-var loxone = require('./loxone-cfg');
+const loxone_config = process.env.LOXONE_CONFIG || "./loxone-cfg";
+console.log("LOADING CONFIG FROM :", loxone_config, process.env.LOXONE_CONFIG )
+var loxone = require(loxone_config);
 
 export
 class LutronTelnetAPI {
@@ -48,6 +50,10 @@ class LutronTelnetAPI {
       this.telnet.on('close', function() {
         console.log("CLOSE");
       })
+
+
+      loxone.connect()
+
       await this.telnet.connect(params);
       console.log("DONE WITH INIT")
     }
@@ -109,8 +115,9 @@ class LutronTelnetAPI {
         }
       }
     }
+    /*
     private loxoneCBUpdate(id:number, action:number, val:number) {
-      console.log("Got Callback to sync Loxone ID:" + id + "action = " + action+" value="+val);
+//      console.log("Got Callback to sync Loxone ID:" + id + "action = " + action+" value="+val);
       if (id in loxone._devMapper) {
         let devAList = loxone._devMapper[id]
         let dev = devAList[0]
@@ -123,19 +130,26 @@ class LutronTelnetAPI {
           }
         }
         if (found == 0) {
-          console.log("\t Did not find the action" + action + " for device " + id);
+          console.log("\t Did not find the action " + action + " for device " + id);
           return;
         }
 
-        console.log("Got Callback to sync Loxone ID:" + id + "action = " + action+" value="+val);
+        console.log("Got Callback to sync Loxone ID:" + id + " action = " + action+" value="+val);
         let rname = dev.name
-        if ('read_name' in dev) rname = dev.read_name
-        // if just cmd then pass it through
-        if (dev.type == 'direct') {
-          console.log("Got a direct command will pass through command " + dev.command + " to " + dev.name)
-          loxone.set(dev.name, dev.command, function(out:any){})
+        let uuid = dev['uuid']
+        if (dev['type'] == 'default') {
+          let mul = dev['mult']
+          loxone.state_update(uuid, val * mul)
           return
+        } else if (dev['type'] == 'direct') {
+          console.log("Got a direct command will pass through command " + dev.command + " to " + dev.name)
+//          loxone.set(dev.name, dev.command, function(out:any){})
+          loxone.send_control_command(uuid, dev.command)
+          return
+        } else {
+          console.log("ERROR: Unable to use type=", dev['type']," for id = ")
         }
+/*
         loxone.get(rname, (function(name: string, type:string, set_val:any, out:any) {
           if (out.LL.Code == 200) {
             if (type == 'switch') {
@@ -152,33 +166,13 @@ class LutronTelnetAPI {
             }
           }
         }).bind(null, dev.name, dev.type, val))
+        * /
       }
-    }
+    }*/
     private scheduleLoxoneUpdate(deviceId:number, action:number, value:number){
       squeue.sched(deviceId, {v:value, a:action}, 1000, (function(th:LutronTelnetAPI, id:number, val:any) {
-        th.loxoneCBUpdate(id, val.a, val.v)
+        loxone.devUpdate(id, val.a, val.v)
       }).bind(null, this))
     }
 
 }
-/*
-//let a = new LutronTelnetAPI('127.0.0.1',2323)
-let a = new LutronTelnetAPI('192.168.55.195',23)
-let run2 = async function(a:LutronTelnetAPI) {
-  console.log("INIT...")
-  await a.init()
-  console.log("RUN")
-//  await a.send('#OUTPUT,10,1,1.00')
-  setTimeout(()=>{
-    console.log("output...1 ");
-    a.setValue(4, 1.00);
-//     a.send('#OUTPUT,10,1,1.00');
-     setTimeout(()=>{
-       console.log("output...21 ");
-  //      a.send('#OUTPUT,10,1,0')}, 1000);
-       a.setValue(4, 0)}, 1000);
-      a.update(16)
-  }, 2000);
-
-}
-run2(a)*/
