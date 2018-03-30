@@ -1,7 +1,12 @@
 # NOTE
-some time back Lutron updeated the code to prevent ssh-key access to the controller. To fix I updated the code to use Telnet to connect to the PRO-Bridge, with that this code work. The previous SSH mechanism of accessing the API is no longer functional. And this code only works with PRO-Bridge
+This project will only work if you have the Pro-Bridge form lutron.
 
-I have also added LOXONE sync to the code base, now all changes in lutron state will be directly updated into loxone. (i.e.  pressing a lutron switch on the wall will also toggle the state of a virtual switch in the LOXONE controller) Helps in keeping LOXONE dashboard in sync,(Othewise I was having the problem where loxone will say light is off but it may have been turned on by someone pressing the switch on the wall). 
+Update: I have also added LOXONE sync to the code base, now all changes in lutron state will be directly updated into loxone. (i.e.  pressing a lutron switch on the wall will also toggle the state of a virtual switch in the LOXONE controller) Helps in keeping LOXONE dashboard in sync,(Othewise I was having the problem where loxone will say light is off but it may have been turned on by someone pressing the switch on the wall). 
+This is achived by putting information on what you want to sync in the file loxone-cfg.ts, you will need to add an entry there for the switch that you want to sync and the lutron device id that you want the switch to sync to. 
+The lutron device ID can be found by looking at the log when activating the lutron device. You will see a log message with the device id. 
+The loxone device uuid can be found by running "npm run watch", this will print out uuid's as you interact with the loxone controller.
+
+If you have problem with this or want some help open a issue on github.
 
 # lutronjs
 
