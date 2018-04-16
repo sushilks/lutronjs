@@ -44,7 +44,7 @@ class LutronTelnetAPI {
         console.log("FAILED LOGIN");
       });
       this.telnet.on('error', function() {
-        console.log("ERR ");
+        console.log("ERR ");process.exit(1);
       });
 
       this.telnet.on('close', function() {
