@@ -4,17 +4,17 @@
   "author": "Sushil Singh",
   "description": " Api Gateway for lutron devices",
   "dependencies": {
-    "express": "^4.15.4",
-    "node-ssh": "^4.2.3",
-    "source-map-support": "^0.4.16",
-    "telnet-client": "^0.15.4",
+    "express": "^4.18.2",
     "loxone-nodejs": "",
-    "node-lox-ws-api": ""
+    "node-lox-ws-api": "",
+    "node-ssh": "^13.1.0",
+    "source-map-support": "^0.5.21",
+    "telnet-client": "^2.0.8"
   },
   "devDependencies": {
     "@types/node": "^8.0.19",
-    "typescript": "^2.4.2",
-    "body-parser": "^1.17"
+    "body-parser": "^1.17",
+    "typescript": "^4.1.2"
   },
   "scripts": {
     "build": "./node_modules/.bin/tsc",

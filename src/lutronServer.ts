@@ -22,7 +22,7 @@ if (!defaultMethodTelnet) {
       .then((devList:any)=> {
         res.status(200).send(JSON.stringify(devList));
       });
-    } catch(e) {
+    } catch(e: any) {
       console.log("Error: " + e);
       console.log(e.stack);
       res.status(400).send("Error while processing the request");
@@ -38,7 +38,7 @@ if (!defaultMethodTelnet) {
         console.log("    Returning:" + JSON.stringify(result));
         res.status(200).send(JSON.stringify(result));
       });
-    } catch(e) {
+    } catch(e: any) {
       console.log("Error: " + e);
       console.log(e.stack);
       res.status(400).send("Error while processing the request");
@@ -53,7 +53,7 @@ if (!defaultMethodTelnet) {
       .then((r:any) => {
           res.status(200).send('ok');
       });
-    } catch(e) {
+    } catch(e: any) {
       console.log("Error: " + e);
       console.log(e.stack);
       res.status(400).send("Error while processing the request");
@@ -68,7 +68,7 @@ if (!defaultMethodTelnet) {
       .then((r:any) => {
           res.status(200).send('ok');
       });
-    } catch(e) {
+    } catch(e: any) {
       console.log("Error: " + e);
       console.log(e.stack);
       res.status(400).send("Error while processing the request");
@@ -86,7 +86,7 @@ app.get('/v0/device/:deviceid', function (req:ExpCB, res:ExpCB, next:ExpCB){
       console.log("    Returning:" + JSON.stringify(result));
       res.status(200).send(JSON.stringify(result));
     });
-  } catch(e) {
+  } catch(e: any) {
     console.log("Error: " + e);
     console.log(e.stack);
     res.status(400).send("Error while processing the request");
@@ -100,7 +100,7 @@ app.put('/v0/device/:deviceid/value/:value', function(req:ExpCB, res:ExpCB, next
     .then((r:any) => {
         res.status(200).send('ok');
     });
-  } catch(e) {
+  } catch(e: any) {
     console.log("Error: " + e);
     console.log(e.stack);
     res.status(400).send("Error while processing the request");
@@ -115,7 +115,7 @@ app.get('/v0/status/all', function (req:ExpCB, res:ExpCB, next:ExpCB){
       console.log("    Returning:" + JSON.stringify(result));
       res.status(200).send(JSON.stringify(result));
     });
-  } catch(e) {
+  } catch(e: any) {
     console.log("Error: " + e);
     console.log(e.stack);
     res.status(400).send("Error while processing the request");
@@ -130,7 +130,7 @@ app.put('/v0/toggle/:deviceid', function(req:ExpCB, res:ExpCB, next:ExpCB){
     .then((r:any) => {
         res.status(200).send('ok');
     });
-  } catch(e) {
+  } catch(e: any) {
     console.log("Error: " + e);
     console.log(e.stack);
     res.status(400).send("Error while processing the request");

@@ -59,7 +59,7 @@ class LoxoneWS {
           let uuid=dt[itm].uuid.string
           if (type==1) {
             let not_found = true
-            if (this.state.sfile != {}) {
+            if (true) { // (this.state.sfile != {}) {
               let controls = this.state.sfile['controls']
               let uuid_split = uuid.split('-')
               let uuid_l = uuid_split[0] + '-' + uuid_split[1]

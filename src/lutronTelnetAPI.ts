@@ -1,4 +1,4 @@
-const Telnet = require('telnet-client')
+const { Telnet } = require('telnet-client')
 let squeue = require('./taskQueue')
 const loxone_config = process.env.LOXONE_CONFIG || "./loxone-cfg";
 console.log("LOADING CONFIG FROM :", loxone_config, process.env.LOXONE_CONFIG )
@@ -51,9 +51,9 @@ class LutronTelnetAPI {
         console.log("CLOSE");
       })
 
-
+      if (loxone != null) {
       loxone.connect()
-
+      }
       await this.telnet.connect(params);
       console.log("DONE WITH INIT")
     }
@@ -171,7 +171,9 @@ class LutronTelnetAPI {
     }*/
     private scheduleLoxoneUpdate(deviceId:number, action:number, value:number){
       squeue.sched(deviceId, {v:value, a:action}, 1000, (function(th:LutronTelnetAPI, id:number, val:any) {
+        if (loxone != null) {
         loxone.devUpdate(id, val.a, val.v)
+        }
       }).bind(null, this))
     }
 

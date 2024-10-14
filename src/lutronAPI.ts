@@ -141,8 +141,9 @@ class LutronAPI {
       }
     }
 
-    private execShellCommand(cmd:LutronMSG): Promise<LutronMSG> {
-      return new Promise((function (self:LutronAPI, resolve:(d:string|LutronMSG)=>string|LutronMSG, reject:(d:string|LutronMSG)=>string|LutronMSG) {
+    private execShellCommand(cmd:LutronMSG): Promise<any> { // string|LutronMSG> {
+      // return new Promise((function (self:LutronAPI, resolve:(d:string|LutronMSG)=>string|LutronMSG, reject:(d:string|LutronMSG)=>string|LutronMSG) {
+      return new Promise((function (self:LutronAPI, resolve:(d:any)=>any, reject:(d:any)=>any) {
         if (self.shellPromiseResp != '') {
           console.log('ERROR: Found Previous promise callbacks!! Will Overwrite');
           let msg:LutronMSG = {
@@ -203,7 +204,7 @@ class LutronAPI {
           return ret_str.Body.ZoneStatus.Level;
         else
           return -1;
-      } catch(e) {
+      } catch(e:any) {
         console.log("ERROR : getValue:" + e.stack)
         return -1;
       }
@@ -228,7 +229,7 @@ class LutronAPI {
             }
         }
         return res;
-      } catch(e) {
+      } catch(e:any) {
         console.log("ERROR : getStatusAll:" + e.stack)
         return -1;
       }
@@ -252,7 +253,7 @@ class LutronAPI {
           return ret_str.Body.ZoneStatus.Level;
         else
           return -1;
-      } catch(e) {
+      } catch(e: any) {
         console.log("ERROR : getValue:" + e.stack)
         return -1;
       }
@@ -277,7 +278,7 @@ class LutronAPI {
         };
         let ret_str = await this.execShellCommand(cmd);
         return true;
-      } catch(e) {
+      } catch(e: any) {
         console.log("ERROR : setZoneValue:" + e.stack)
         return false;
       }
@@ -304,7 +305,7 @@ class LutronAPI {
         };
         let ret_str = await this.execShellCommand(cmd);
         return true;
-      } catch(e) {
+      } catch(e: any) {
         console.log("ERROR : setValue:" + e.stack)
         return false;
       }
@@ -335,7 +336,7 @@ class LutronAPI {
         };
         let ret_str = await this.execShellCommand(cmd);
         return true;
-      } catch(e) {
+      } catch(e: any) {
         console.log("ERROR : setValue:" + e.stack)
         return false;
       }
