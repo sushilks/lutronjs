@@ -1,29 +1,26 @@
 {
   "name": "lutronjs",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "author": "Sushil Singh",
-  "description": " Api Gateway for lutron devices",
+  "description": "API gateway for Lutron (RA2 Select / Caseta Pro) with bidirectional Loxone state sync",
+  "license": "Apache-2.0",
+  "main": "build/lutronServer.js",
+  "engines": {
+    "node": ">=22.4"
+  },
   "dependencies": {
-    "express": "^4.18.2",
-    "loxone-nodejs": "",
-    "node-lox-ws-api": "",
-    "node-ssh": "^13.1.0",
-    "source-map-support": "^0.5.21",
-    "telnet-client": "^2.0.8"
+    "express": "^5.3.0"
   },
   "devDependencies": {
-    "@types/node": "^8.0.19",
-    "body-parser": "^1.17",
-    "typescript": "^4.1.2"
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.6",
+    "typescript": "^7.0.2"
   },
   "scripts": {
-    "build": "./node_modules/.bin/tsc",
-    "watch": "node --harmony ./build/loxone_events.js",
-    "server": "node --harmony ./build/lutronServer.js"
-  },
-  "licenses": [
-    {
-      "type": "Apache 2.0"
-    }
-  ]
+    "build": "tsc",
+    "test": "tsc && node --test build/test/*.test.js",
+    "server": "node --env-file-if-exists=cfg/loxone.env --env-file-if-exists=cfg/${HUB:-none}.env --enable-source-maps ./build/lutronServer.js",
+    "watch": "node --env-file-if-exists=cfg/loxone.env --env-file-if-exists=cfg/${HUB:-none}.env --enable-source-maps ./build/loxone_events.js",
+    "discover": "node --env-file-if-exists=cfg/loxone.env --env-file-if-exists=cfg/${HUB:-none}.env ./build/discover_cli.js"
+  }
 }

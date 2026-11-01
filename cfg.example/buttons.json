@@ -1,0 +1,16 @@
+{
+  "sync": {
+    "settleMs": 750,
+    "loxoneSettleMs": 300,
+    "holdMs": 2500,
+    "echoMs": 4000,
+    "reconcileSec": 300,
+    "tolerance": 1
+  },
+  "buttons": {
+    "21": [
+      { "action": 2, "uuid": "<uuid of the Loxone block>", "name": "Bedroom Blind", "command": "PulseUp" },
+      { "action": 4, "uuid": "<uuid of the Loxone block>", "name": "Bedroom Blind", "command": "PulseDown" }
+    ]
+  }
+}

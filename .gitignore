@@ -58,3 +58,7 @@ typings/
 # dotenv environment variables file
 .env
 
+
+# local build output and site configs (may contain credentials)
+build/
+cfg/

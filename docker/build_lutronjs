@@ -1,2 +1,13 @@
-docker build . -t sushilks/lutronjs
-
+#!/bin/sh
+# usage: docker/build_lutronjs <tag>
+# Builds the image and pushes it. Site settings come from cfg/build.env (git-ignored):
+#   IMAGE=<registry>/<name>      required
+#   PLATFORM=linux/arm64         optional, defaults to the build machine's platform
+# Uses plain docker build/push so the daemon's registry settings (e.g. insecure-registries) apply.
+set -e
+cd "$(dirname "$0")/.."
+[ -f cfg/build.env ] && . cfg/build.env
+TAG=${1:?usage: $0 <tag>}
+: "${IMAGE:?set IMAGE in cfg/build.env or the environment}"
+docker build ${PLATFORM:+--platform "$PLATFORM"} -f docker/Dockerfile -t "$IMAGE:$TAG" .
+docker push "$IMAGE:$TAG"
