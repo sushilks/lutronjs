@@ -58,6 +58,14 @@ export interface SyncOptions {
   reconcileSec?: number;
   /** level difference (0-100) that counts as in sync */
   tolerance?: number;
+  /**
+   * Shades move for tens of seconds and a Jalousie press briefly targets the end stop
+   * (fully open/closed) until the button is released. Wait this long for a stable target
+   * before sending, so a press and release becomes one command with the final position.
+   */
+  shadeSettleMs?: number;
+  /** level difference that counts as in sync for shades (Loxone simulates travel, it drifts) */
+  shadeTolerance?: number;
   breakerMax?: number;
   breakerWindowMs?: number;
   breakerCooldownMs?: number;
@@ -144,6 +152,7 @@ export class LoxoneWS {
     const envInterval = parseInt(process.env.DISCOVERY_INTERVAL_SEC ?? '', 10);
     this.opts = {
       settleMs: 750, loxoneSettleMs: 300, holdMs: 2500, echoMs: 4000, reconcileSec: 300, tolerance: 1,
+      shadeSettleMs: 1500, shadeTolerance: 2,
       breakerMax: 20, breakerWindowMs: 60_000, breakerCooldownMs: 300_000,
       hubTag: process.env.LUTRON_HUB_TAG ?? '',
       discoveryIntervalSec: isNaN(envInterval) ? 86_400 : envInterval,
@@ -369,9 +378,17 @@ export class LoxoneWS {
     return v === undefined || r.kind === 'button' ? undefined : this.fromLoxone(r, v);
   }
 
+  private tolerance(r: Resolved) {
+    return r.kind === 'shade' ? this.opts.shadeTolerance : this.opts.tolerance;
+  }
+
   private near(r: Resolved, a: number, b: number) {
     if (r.kind === 'switch') return (a > 0) === (b > 0);
-    return Math.abs(a - b) <= this.opts.tolerance;
+    return Math.abs(a - b) <= this.tolerance(r);
+  }
+
+  private isShade(id: number) {
+    return (this.active.resolved.get(id) ?? []).some((r) => r.kind === 'shade');
   }
 
   private isHeld(map: Map<number, number>, id: number) { return (map.get(id) ?? 0) > Date.now(); }
@@ -391,7 +408,7 @@ export class LoxoneWS {
     this.scheduleLoxonePush(id);
   }
 
-  private scheduleLoxonePush(id: number, delay = this.opts.settleMs) {
+  private scheduleLoxonePush(id: number, delay = this.isShade(id) ? this.opts.shadeSettleMs : this.opts.settleMs) {
     clearTimeout(this.loxonePushTimers.get(id));
     this.loxonePushTimers.set(id, setTimeout(() => {
       this.loxonePushTimers.delete(id);
@@ -410,7 +427,7 @@ export class LoxoneWS {
       const pushed = this.lastPush.get(id);
       // No mirrored state (control unknown): fall back to what we sent last.
       const inSync = lox !== undefined ? this.near(r, level, lox)
-        : pushed !== undefined && Math.abs(pushed.level - level) <= this.opts.tolerance;
+        : pushed !== undefined && Math.abs(pushed.level - level) <= this.tolerance(r);
       if (inSync) {
         if (this.debug) console.log(`Sync: ${id} ${r.m.name ?? ''} already in sync (${level})`);
         continue;
@@ -445,7 +462,8 @@ export class LoxoneWS {
     }
   }
 
-  private scheduleLutronSet(r: Resolved, delay = this.opts.loxoneSettleMs) {
+  // Every new Loxone value restarts the wait, so only the settled target is sent.
+  private scheduleLutronSet(r: Resolved, delay = r.kind === 'shade' ? this.opts.shadeSettleMs : this.opts.loxoneSettleMs) {
     clearTimeout(this.lutronSetTimers.get(r.id));
     this.lutronSetTimers.set(r.id, setTimeout(() => {
       this.lutronSetTimers.delete(r.id);

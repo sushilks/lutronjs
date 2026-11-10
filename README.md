@@ -58,6 +58,7 @@ Loops (Lutron → Loxone → Lutron → …) are prevented by four layers:
 | State compare | A value the other side already has (± `tolerance`) is never sent. |
 | Origin tags | Every value lutronjs sends is remembered. When the other side reports it back within `echoMs`, it's recognized as ours and not reflected. Virtual output calls right after a push are dropped the same way. |
 | Hold | After one side originates a change for a device, the other direction waits `holdMs`. A moving slider is never overwritten by a lagging report. |
+| Shade settling | Shades wait `shadeSettleMs` (1.5 s) for a stable target and use `shadeTolerance` (2 %). Pressing a Jalousie arrow in the Loxone app briefly targets the end stop; only the position where it ends up is sent to Lutron. |
 | Circuit breaker | More than `breakerMax` syncs of one device in `breakerWindowMs` pauses that device and logs `LOOP DETECTED`. |
 
 ### Mapping changes

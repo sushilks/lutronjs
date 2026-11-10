@@ -117,7 +117,7 @@ const buttons: DeviceMap = {
        { action: 4, uuid: 'blind-1', type: 'direct', command: 'PulseDown' }],
 };
 
-const opts = { settleMs: 20, loxoneSettleMs: 10, holdMs: 60, echoMs: 150, reconcileSec: 0, tolerance: 1,
+const opts = { settleMs: 20, loxoneSettleMs: 10, shadeSettleMs: 100, shadeTolerance: 2, holdMs: 60, echoMs: 150, reconcileSec: 0, tolerance: 1,
                breakerMax: 5, breakerWindowMs: 1000, breakerCooldownMs: 5000, hubTag: 'RA2', discoveryIntervalSec: 0 };
 
 let lutron: FakeLutron;
@@ -303,4 +303,38 @@ test('legacy static mapping by state uuid sends commands to the uuidAction', asy
   lutron.wallPress(9, 40);
   await wait(100);
   assert.deepEqual(ms.commands, [['lc-1/AI3', '40']]);
+});
+
+// Replays a real log: pressing the arrow of an Automatic Shading block in the Loxone app sets
+// the target to the end stop while pressed and to the reached position on release (~350 ms).
+// Forwarding both made the real shade start a full travel and reverse: a wiggle, then a loop.
+test('shade: press-and-release in the Loxone app sends only the final position', async () => {
+  // shade at rest, fully closed on both sides (Loxone 1 = closed, Lutron 0 = closed)
+  ms.set('s-jal-t', 0);       // pressed "up": target fully open
+  await wait(35);
+  ms.set('s-jal-t', 0.9);     // released: 10 % open
+  await wait(250);
+  ms.set('s-jal-t', 0);       // pressed again
+  await wait(35);
+  ms.set('s-jal-t', 0.8);     // released: 20 % open
+  await wait(300);
+  assert.deepEqual(lutron.sets, [[40, 10], [40, 20]], 'the end-stop target must never reach Lutron');
+  assert.deepEqual(ms.commands, [], 'nothing pushed back to Loxone');
+  assert.equal(sync.status().devices.find((d) => d.lutronId === 40)!.breakerTripped, false);
+});
+
+test('shade: a target that stays at the end stop (full close/open) is still sent', async () => {
+  lutron.levels.set(40, 50);
+  ms.set('s-jal-t', 0.5);     // at rest half way, matches Lutron: nothing to send
+  await wait(250);
+  ms.set('s-jal-t', 1);       // fully closed and stays there
+  await wait(250);
+  assert.deepEqual(lutron.sets, [[40, 0]]);
+});
+
+test('shade: differences within the shade tolerance are not sent', async () => {
+  lutron.levels.set(40, 21);
+  ms.set('s-jal-t', 0.8);     // Loxone simulation says 20 %, real shade is at 21 %
+  await wait(250);
+  assert.deepEqual(lutron.sets, []);
 });
